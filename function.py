@@ -10,4 +10,4 @@ def coast_list(df):
         else:
             regions.append(None)
     df['region'] = regions
-    return df.dropna()[['beer_name', 'brewery_name', 'ibu', 'state', 'region']]
+    return df[['beer_name', 'brewery_name', 'ibu', 'state', 'region']].dropna()
