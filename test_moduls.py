@@ -1,99 +1,114 @@
-# flatiron_stats
+"""This module contains functions used to perform hypotesis testing."""
+
+# Data analysis packages:
+# import pandas as pd
 import numpy as np
 import scipy.stats as stats
 import seaborn as sns
 
 
 def welch_t(a, b):
-    """ Calculate Welch's t statistic for two samples. """
-
+    """Return Welch's t statistic for two samples."""
+    # welch t calculation
     numerator = a.mean() - b.mean()
-
-    # “ddof = Delta Degrees of Freedom”: the divisor used in the calculation is N - ddof,
+    # “ddof = Delta Degrees of Freedom”: the divisor used in N- ddof,
     #  where N represents the number of elements. By default ddof is zero.
-
     denominator = np.sqrt(a.var(ddof=1)/a.size + b.var(ddof=1)/b.size)
 
     return np.abs(numerator/denominator)
 
 
 def welch_df(a, b):
-    """ Calculate the effective degrees of freedom for two samples. This function returns the degrees of freedom """
-
-    s1 = a.var(ddof=1)
-    s2 = b.var(ddof=1)
-    n1 = a.size
-    n2 = b.size
+    """Return the effective degrees of freedom for two samples welch test."""
+    # calculate welch df
+    s1, s2 = a.var(ddof=1), b.var(ddof=1)
+    n1, n2 = a.size, b.size
 
     numerator = (s1/n1 + s2/n2)**2
     denominator = (s1 / n1)**2/(n1 - 1) + (s2 / n2)**2/(n2 - 1)
+    df = numerator/denominator
+    return df
 
-    return numerator/denominator
 
-
-def p_value_welch_ttest(a, b, two_sided=False):
-    """Calculates the p-value for Welch's t-test given two samples.
-    By default, the returned p-value is for a one-sided t-test.
-    Set the two-sided parameter to True if you wish to perform a two-sided t-test instead.
+def p_value_welch_ttest(a, b, two_sided=False, alpha=0.05):
+    """Return the p-value for Welch's t-test given two samples."""
     """
-    alpha = 0.05
-    t = welch_t(a, b)
+    By default, the returned p-value is for a one-sided t-test.
+    Set the two-sided parameter to True if you wish to perform a two-sided
+    t-test instead.
+    """
+
+    t_welch = welch_t(a, b)
     df = welch_df(a, b)
+
     # Calculate the critical t-value
     t_crit = stats.t.ppf(1-alpha, df=df)
-
-    p = 1-stats.t.cdf(np.abs(t), df)
+    p_welch = 1-stats.t.cdf(np.abs(t_welch), df)
 
     # return results
-    if (t > t_crit and p < alpha):
-        print("Null hypohesis rejected. Results are statistically significant with t-value = ", t,
-              "critical t-value = ", t_crit, "and p-value = ", p)
+    if (t_welch > t_crit and p < alpha):
+        print("""Null hypohesis rejected. Results are statistically significant
+         with t-value = """, round(t_welch, 4), "critical t-value = ",
+              round(t_crit, 4), "and p-value = ", round(p_welch, 4))
     else:
-        print('Null hypothesis is True with t-value = ', t,
-              "critical t-value = ", t_crit, 'and p-value = ', p)
+        print('We fail to reject the Null hypothesis with t-value = ',
+              round(t_welch, 4), "critical t-value = ", round(t_crit, 4),
+              'and p-value = ', round(p_welch, 4))
 
     if two_sided:
-        return 2*p
+        return 2 * p_welch
     else:
-        return p
+        return p_welch
 
 
-def ttest(sample, popmean, alpha):
+# Two sample t-test
+def sample_variance(sample):
+    """Calculates sample varaiance."""
+    sample_mean = np.mean(sample)
+    return np.sum((sample-sample_mean)**2)/(len(sample) - 1)
 
+
+def pooled_variance(sample1, sample2):
+    """Calculates pooled sample variance."""
+    n_1, n_2 = len(sample1), len(sample2)
+    var_1, var_2 = sample_variance(sample1), sample_variance(sample2)
+
+    return ((n_1 - 1) * var_1 + (n_2 - 1) * var_2)/(n_1 + n_2 - 2)
+
+
+def twosample_tstatistic(expr, ctrl, alpha=0.05):
+    """Plot two_tailed t-distibution."""
     # Visualize sample distribution for normality
     sns.set(color_codes=True)
     sns.set(rc={'figure.figsize': (12, 10)})
-    sns.distplot(sample)
 
-    # Population mean
-    mu = popmean
-
-    # Sample mean (x̄) using NumPy mean()
-    x_bar = round(sample.mean(), 2)
-
-    # Sample Standard Deviation (sigma) using Numpy
-    sigma = round(np.std(sample, ddof=1), 3)
-
-    # Degrees of freedom
-    df = len(sample) - 1
+    exp_mean, ctrl_mean = np.mean(expr), np.mean(ctrl)
+    pool_var = pooled_variance(expr, ctrl)
+    n_e, n_c = len(expr), len(ctrl)
+    num = exp_mean - ctrl_mean
+    denom = np.sqrt(pool_var * ((1/n_e) + (1/n_c)))
 
     # Calculate the critical t-value
-    t_crit = stats.t.ppf(1-alpha, df=df)
-    # (x_bar - mu)/(sigma/np.sqrt(len(sample)))
+    df = len(expr) + len(ctrl) - 2
+    t_crit = stats.t.ppf(1-alpha/2, df=df)
 
-    # Calculate the t-value and p-value
-    results = stats.ttest_1samp(a=sample, popmean=mu)
-    t_value = round(results[0], 2)
-    p_value = np.round((results[1]), 4)
+    t_stat = num/denom
+    p_value = 1 - stats.t.cdf(t_stat, df=df)
 
     # return results
-    if (t_value > t_crit and p_value < alpha):
-        print("Null hypohesis rejected. Results are statistically significant with t-value = ", t_value,
-              "critical t-value = ", t_crit, "and p-value = ", p_value)
-    else:
-        print('Null hypothesis is True with t-value = ', t_value,
-              "critical t-value = ", t_crit, 'and p-value = ', p_value)
+    if (t_stat > t_crit and p_value < alpha):
 
-    print('The sample contains', len(sample), 'observations, having a mean of', x_bar, 'and a standard devation (sigma) =', sigma,
-          ', with', df, 'degrees of freedom. The difference between sample and population means is:', (x_bar - mu))
-    return t_crit
+        print("""Null hypohesis rejected. Results are statistically significant
+         with t-statistic = """, round(t_stat, 4),
+              "critical t-value = ", round(t_crit, 4), "and p-value = ",
+              round(p_value, 4))
+    else:
+        print('Null hypothesis is True with t-statistic = ', round(t_stat, 4),
+              "critical t-value = ", round(t_crit, 4), 'and p-value = ',
+              round(p_value, 4))
+
+    print('The groups contains', len(expr), 'and ', len(ctrl), """observations,
+     having a mean of""", np.round(exp_mean, 4), 'and', np.round(ctrl_mean, 4),
+          'respectivelly')
+
+    return t_stat
