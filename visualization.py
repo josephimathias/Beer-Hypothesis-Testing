@@ -71,3 +71,39 @@ def visualize_t(t_stat, n1, n2, alpha=0.05):
 #                  loc = x_bar,                        # Sample mean
 #                  scale = sd)
 # print('sample mean is:', x_bar, 'and the confidence interval is', conf)
+
+
+# one-sided ANOVA
+
+def f_distribution(dfn, dfd, t_anova, p_anova, alpha=0.05,):
+    """Plot one-sided f-distibution test."""
+    fig, ax = plt.subplots(1, 1)
+
+    x = np.linspace(stats.f.ppf(0.01, dfn, dfd),
+                    stats.f.ppf(0.99, dfn, dfd), 100)
+    t_crit = stats.f.ppf((1-alpha), dfn, dfd)
+    y = stats.f.pdf(x, dfn, dfd)
+
+    ax.plot(x, y, 'r-', lw=5, alpha=alpha, label='f pdf')
+    ax.axvline(t_anova, color='red', linestyle='--', lw=2, label='t-anova')
+    ax.axvline(t_crit, color='green', linestyle='--', lw=2, label='t-critical')
+    ax.fill_betweenx(y, x, t_crit, where=x > t_crit, color='#376cb0',
+                     alpha=0.7)
+    rv = stats.f(dfn, dfd)
+    ax.plot(x, rv.pdf(x), 'k-', lw=2, label='frozen pdf')
+    plt.title('F-PDF (one-sided test at alpha = {})'. format(alpha), size=20)
+    plt.xlabel('Value of F', size=15)
+    plt.ylabel('Probability Density', size=15)
+
+    # hypothesis result
+    if (t_anova > t_crit and p_anova < alpha):
+
+        print("""Null hypohesis rejected. Results are statistically significant
+         with t-statistic = """, round(t_anova, 4), ", critical t-value = ",
+              round(t_crit, 4), "and p-value = ", round(p_anova, 4))
+    else:
+        print('Null hypothesis is True with t-statistic = ',
+              round(t_anova, 4), ", critical t-value = ",
+              round(t_crit, 4), 'and p-value = ', round(p_anova, 4))
+
+    ax.legend(loc='best', frameon=False)

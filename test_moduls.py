@@ -60,8 +60,9 @@ def p_value_welch_ttest(a, b, two_sided=False, alpha=0.05):
     else:
         return p_welch
 
-
 # Two sample t-test
+
+
 def sample_variance(sample):
     """Calculates sample varaiance."""
     sample_mean = np.mean(sample)
