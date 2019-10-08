@@ -48,12 +48,12 @@ def p_value_welch_ttest(a, b, two_sided=False, alpha=0.05):
     # return results
     if (t_welch > t_crit and p < alpha):
         print("""Null hypohesis rejected. Results are statistically significant
-         with t-value = """, round(t_welch, 4), "critical t-value = ",
-              round(t_crit, 4), "and p-value = ", round(p_welch, 4))
+         with t-value = """, round(t_welch, 4), ", critical t-value = ",
+              round(t_crit, 4), ", and p-value = ", round(p_welch, 4))
     else:
         print('We fail to reject the Null hypothesis with t-value = ',
-              round(t_welch, 4), "critical t-value = ", round(t_crit, 4),
-              'and p-value = ', round(p_welch, 4))
+              round(t_welch, 4), ", critical t-value = ", round(t_crit, 4),
+              ', and p-value = ', round(p_welch, 4))
 
     if two_sided:
         return 2 * p_welch
@@ -99,16 +99,15 @@ def twosample_tstatistic(expr, ctrl, alpha=0.05):
     if (t_stat > t_crit and p_value < alpha):
 
         print("""Null hypohesis rejected. Results are statistically significant
-         with t-statistic = """, round(t_stat, 4),
-              "critical t-value = ", round(t_crit, 4), "and p-value = ",
-              round(p_value, 4))
+         with t-statistic = """, round(t_stat, 4), ", critical t-value = ",
+              round(t_crit, 4), "and p-value = ", round(p_value, 4))
     else:
-        print('Null hypothesis is True with t-statistic = ', round(t_stat, 4),
-              "critical t-value = ", round(t_crit, 4), 'and p-value = ',
-              round(p_value, 4))
+        print('Null hypothesis is True with t-statistic = ',
+              round(t_stat, 4), ", critical t-value = ",
+              round(t_crit, 4), 'and p-value = ', round(p_value, 4))
 
-    print('The groups contains', len(expr), 'and ', len(ctrl), """observations,
-     having a mean of""", np.round(exp_mean, 4), 'and', np.round(ctrl_mean, 4),
+    print('The groups contain', len(expr), 'and ', len(ctrl), "observations.",
+          'Means are: ', np.round(exp_mean, 4), 'and', np.round(ctrl_mean, 4),
           'respectivelly')
 
     return t_stat
