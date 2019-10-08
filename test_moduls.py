@@ -61,47 +61,6 @@ def p_value_welch_ttest(a, b, two_sided=False, alpha=0.05):
         return p_welch
 
 
-def ttest(sample, popmean, alpha):
-
-    # Visualize sample distribution for normality
-    sns.set(color_codes=True)
-    sns.set(rc={'figure.figsize': (12, 10)})
-    sns.distplot(sample)
-
-    # Population mean
-    mu = popmean
-
-    # Sample mean (x̄) using NumPy mean()
-    x_bar = round(sample.mean(), 2)
-
-    # Sample Standard Deviation (sigma) using Numpy
-    sigma = round(np.std(sample, ddof=1), 3)
-
-    # Degrees of freedom
-    df = len(sample) - 1
-
-    # Calculate the critical t-value
-    t_crit = stats.t.ppf(1-alpha, df=df)
-    # (x_bar - mu)/(sigma/np.sqrt(len(sample)))
-
-    # Calculate the t-value and p-value
-    results = stats.ttest_1samp(a=sample, popmean=mu)
-    t_value = round(results[0], 2)
-    p_value = np.round((results[1]), 4)
-
-    # return results
-    if (t_value > t_crit and p_value < alpha):
-        print("Null hypohesis rejected. Results are statistically significant with t-value = ", t_value,
-              "critical t-value = ", t_crit, "and p-value = ", p_value)
-    else:
-        print('Null hypothesis is True with t-value = ', t_value,
-              "critical t-value = ", t_crit, 'and p-value = ', p_value)
-
-    print('The sample contains', len(sample), 'observations, having a mean of', x_bar, 'and a standard devation (sigma) =', sigma,
-          ', with', df, 'degrees of freedom. The difference between sample and population means is:', (x_bar - mu))
-    return t_crit
-
-
 # Two sample t-test
 def sample_variance(sample):
     """Calculates sample varaiance."""
