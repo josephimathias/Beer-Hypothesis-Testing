@@ -46,7 +46,7 @@ def p_value_welch_ttest(a, b, two_sided=False, alpha=0.05):
     p_welch = 1-stats.t.cdf(np.abs(t_welch), df)
 
     # return results
-    if (t_welch > t_crit and p < alpha):
+    if (t_welch > t_crit and p_welch < alpha):
         print("""Null hypohesis rejected. Results are statistically significant
          with t-value = """, round(t_welch, 4), ", critical t-value = ",
               round(t_crit, 4), ", and p-value = ", round(p_welch, 4))

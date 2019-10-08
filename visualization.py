@@ -45,7 +45,7 @@ def visualize_t(t_stat, n1, n2, alpha=0.05):
     ax.axvline(t_stat, color='red', linestyle='--', lw=2,
                label='t-statistic ')
     ax.axvline(t_crit, color='green', linestyle='--', lw=2,
-               label='t- critical')
+               label='t-critical')
     # ax.axvline(-t_stat, color='black', linestyle='--', lw=4)
     ax.axvline(-t_crit, color='green', linestyle='--', lw=2)
     ax.fill_betweenx(ys, xs, t_crit, where=xs > t_crit,
