@@ -46,14 +46,14 @@ def p_value_welch_ttest(a, b, two_sided=False, alpha=0.05):
     p_welch = 1-stats.t.cdf(np.abs(t_welch), df)
 
     # return results
-    if (t_welch > t_crit and p < alpha):
-        print("""Null hypohesis rejected. Results are statistically significant
-         with t-value = """, round(t_welch, 4), ", critical t-value = ",
+    if (t_welch > t_crit and p_welch < alpha):
+        print("Null hypohesis rejected. Results are statistically significant \
+        with t-value = """, round(t_welch, 4), ", critical t-value = ",
               round(t_crit, 4), ", and p-value = ", round(p_welch, 4))
     else:
-        print('We fail to reject the Null hypothesis with t-value = ',
-              round(t_welch, 4), ", critical t-value = ", round(t_crit, 4),
-              ', and p-value = ', round(p_welch, 4))
+        print('We fail to reject the Null hypothesis with t-value =',
+              round(t_welch, 4), ", critical t-value =", round(t_crit, 4),
+              ', and p-value =', round(p_welch, 4))
 
     if two_sided:
         return 2 * p_welch
@@ -70,7 +70,7 @@ def sample_variance(sample):
 
 
 def pooled_variance(sample1, sample2):
-    """Calculates pooled sample variance."""
+    """retun pooled sample variance."""
     n_1, n_2 = len(sample1), len(sample2)
     var_1, var_2 = sample_variance(sample1), sample_variance(sample2)
 
@@ -99,14 +99,14 @@ def twosample_tstatistic(expr, ctrl, alpha=0.05):
     # return results
     if (t_stat > t_crit and p_value < alpha):
 
-        print("""Null hypohesis rejected. Results are statistically significant
-         with t-statistic = """, round(t_stat, 4), ", critical t-value = ",
-              round(t_crit, 4), "and p-value = ", round(p_value, 4))
+        print("Null hypohesis rejected. Results are statistically significant \
+              with t-statistic=", round(t_stat, 4), ", critical t-value= ",
+              round(t_crit, 4), "and p-value = ", round(p_value, 4), '\n')
     else:
         print('Null hypothesis is True with t-statistic = ',
-              round(t_stat, 4), ", critical t-value = ",
-              round(t_crit, 4), 'and p-value = ', round(p_value, 4))
-
+              round(t_stat, 4), ", critical t-value = ", round(t_crit, 4),
+              'and p-value = ', round(p_value, 4), '\n')
+    print('-----------------group info---------------------------')
     print('The groups contain', len(expr), 'and ', len(ctrl), "observations.",
           'Means are: ', np.round(exp_mean, 4), 'and', np.round(ctrl_mean, 4),
           'respectivelly')

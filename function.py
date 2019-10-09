@@ -8,7 +8,6 @@ def coast_list(df):
         elif state in ec:
             regions.append('ec')
         else:
-            regions.append('')
-#     return regions
+            regions.append(None)
     df['region'] = regions
-    return df[['beer_name', 'brewery_name', 'ibu', 'state']]
+    return df[['beer_name', 'brewery_name', 'ibu', 'state', 'region']].dropna()
