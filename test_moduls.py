@@ -42,18 +42,20 @@ def p_value_welch_ttest(a, b, two_sided=False, alpha=0.05):
     df = welch_df(a, b)
 
     # Calculate the critical t-value
-    t_crit = stats.t.ppf(1-alpha, df=df)
-    p_welch = 1-stats.t.cdf(np.abs(t_welch), df)
+    t_crit = stats.t.ppf(1-alpha/2, df=df)
+    p_welch = (1-stats.t.cdf(np.abs(t_welch), df)) * 2
 
     # return results
     if (t_welch > t_crit and p_welch < alpha):
-        print("Null hypohesis rejected. Results are statistically significant \
-        with t-value = """, round(t_welch, 4), ", critical t-value = ",
-              round(t_crit, 4), ", and p-value = ", round(p_welch, 4))
+        print(f"""Null hypohesis rejected. Results are statistically significant with:
+            t_value = {round(t_welch, 4)}, 
+            critical t_value = {round(t_crit, 4)}, and 
+            p-value = {round(p_welch, 4)}""")
     else:
-        print('We fail to reject the Null hypothesis with t-value =',
-              round(t_welch, 4), ", critical t-value =", round(t_crit, 4),
-              ', and p-value =', round(p_welch, 4))
+        print(f"""We fail to reject the Null hypothesis with: 
+        t_value = {round(t_welch, 4)}, 
+        critical t_value = {round(t_crit, 4)}, 
+        and p_value = {round(p_welch, 4)}""")
 
     if two_sided:
         return 2 * p_welch
@@ -94,21 +96,27 @@ def twosample_tstatistic(expr, ctrl, alpha=0.05):
     t_crit = stats.t.ppf(1-alpha/2, df=df)
 
     t_stat = num/denom
-    p_value = 1 - stats.t.cdf(t_stat, df=df)
+    p_value = (1 - stats.t.cdf(t_stat, df=df)) * 2
+    # p_value =  stats.t.cdf(t_stat, df=df)
 
     # return results
     if (t_stat > t_crit and p_value < alpha):
 
-        print("Null hypohesis rejected. Results are statistically significant \
-              with t-statistic=", round(t_stat, 4), ", critical t-value= ",
-              round(t_crit, 4), "and p-value = ", round(p_value, 4), '\n')
+        print("Null hypohesis rejected. Results are statistically significant with:", "\n", 
+              "t-statistic =", round(t_stat, 4), "\n",
+              "critical t-value =", round(t_crit, 4), "and", "\n"
+              "p-value =", round(p_value, 4), '\n')
     else:
-        print('Null hypothesis is True with t-statistic = ',
-              round(t_stat, 4), ", critical t-value = ", round(t_crit, 4),
-              'and p-value = ', round(p_value, 4), '\n')
-    print('-----------------group info---------------------------')
-    print('The groups contain', len(expr), 'and ', len(ctrl), "observations.",
-          'Means are: ', np.round(exp_mean, 4), 'and', np.round(ctrl_mean, 4),
-          'respectivelly')
+        print("Null hypothesis is True with:", "\n",
+              "t-statistic =", round(t_stat, 4), "\n", 
+              "critical t-value =", round(t_crit, 4), "and", "\n",
+              "p-value = ", round(p_value, 4), '\n')
+        
+        
+        print(">> We fail to reject the Null Hypothesis", "\n")
+        
+    print('----- Groups info  -----')
+    print(f"""The groups contain {len(expr)} , and {len(ctrl)} observations. 
+    The means are {np.round(exp_mean, 4)}, and {np.round(ctrl_mean, 4)} respectivelly""")
 
     return t_stat

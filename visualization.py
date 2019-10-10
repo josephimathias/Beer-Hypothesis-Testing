@@ -5,11 +5,12 @@ import numpy as np
 import seaborn as sns
 import scipy.stats as stats
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 sns.set_style('darkgrid')
 # %matplotlib inline
 
 
-def boxplot(sample1, sample2):
+def boxplot(sample1, sample2, box_plot_name=None):
     """Make a box plot for each column of ``x``.
 
     Parameters
@@ -17,12 +18,18 @@ def boxplot(sample1, sample2):
     X : Array or a sequence of vectors
 
     """
-    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(10, 5), sharey=False)
+    # labelsize = 16
+    fig, axs = plt.subplots(nrows=1, ncols=2, figsize=(12, 5), sharey=False)
 
     axs[0].boxplot(sample1, labels=['ABV'], notch=True, showmeans=True)
-    axs[0].set_title('Colorado')
+    axs[0].set_title('Colorado', fontsize=20)
     axs[1].boxplot(sample2, labels=['ABV'], notch=True, showmeans=True)
-    axs[1].set_title('Califorina')
+    axs[1].set_title('Califorina', fontsize=20)
+    # rcParams['xtick.labelsize'] = labelsize
+    # rcParams['ytick.labelsize'] = labelsize
+
+    # plt.savefig(f'img/{box_plot_name}.png', transparent=False, figure=fig)
+    # return fig
 
 
 def visualize_t(t_stat, n1, n2, alpha=0.05, output_image_name=None):
@@ -53,20 +60,20 @@ def visualize_t(t_stat, n1, n2, alpha=0.05, output_image_name=None):
                      color='#376cb0', alpha=0.7)
     ax.fill_betweenx(ys, xs, -t_crit, where=xs < -t_crit,
                      color='#376cb0', alpha=0.7)
-    plt.title('Two-sided t-distibution', size=20)
+    plt.title('Two-sided t-distribution', size=20)
     plt.xlabel('t (p, df)', size=15)
     plt.ylabel('Probability Distribution', size=15)
 
     ax.legend(loc='best', frameon=False, shadow=True, fontsize='x-large')
 
-    # plt.savefig(f'img/{output_image_name}.png', transparent=True, figure=fig)
+    plt.savefig(f'img/{output_image_name}.png', transparent=False, figure=fig)
 
     # confidence interval
 #     conf = stats.t.interval(alpha=1-alpha, df=(n1+n2) -2, loc, scale = )
 
     # Draw two sided boundary for critical-t
     plt.show()
-    # return fig
+#     return fig
 
 
 # conf = stats.t.interval(alpha=0.95, df=len(sample)-1, loc=x_bar, scale=sd)
@@ -96,16 +103,43 @@ def f_distribution(dfn, dfd, t_anova, p_anova, alpha=0.05, image_name=None):
     # hypothesis result
     if (t_anova > t_crit and p_anova < alpha):
 
-        print("""Null hypohesis rejected. Results are statistically significant
-         with f-statistic = """, round(t_anova, 4), ", critical f-value = ",
-              round(t_crit, 4), "and p-value = ", round(p_anova, 4))
+        print(f"""Null hypohesis rejected. Results are statistically significant with:
+        f-statistic = {round(t_anova, 4)},
+        critical f-value = {round(t_crit, 4)}, and 
+        p-value = {round(p_anova, 4)}""")
     else:
-        print('Null hypothesis is True with f-statistic = ',
-              round(t_anova, 4), ", critical f-value = ",
-              round(t_crit, 4), 'and p-value = ', round(p_anova, 4))
+        print(f"""Null hypothesis is True with: 
+        f-statistic = {round(t_anova, 4)},
+        critical f-value = {round(t_crit, 4)}, and 
+        p-value = {round(p_anova, 4)}""")
+        print(">> We fail to reject the Null Hypohesis")
 
     ax.legend(loc='best', frameon=False, shadow=True, fontsize='x-large')
 
-    # plt.savefig(f'img/{image_name}.png', transparent=True, figure=fig)
+    # plt.savefig(f'img/{image_name}.png', transparent=False, figure=fig)
 
     # return fig
+    
+    
+def print_information(WA_ibu, MN_ibu, DMV_ibu, TX_ibu, CO_ibu):
+    """Return the pirnt informations."""
+    
+    print('Sample International Bitterness Units (IBU) mean in Washington State:', round(WA_ibu.mean(), 3))
+    print('Sample International Bitterness Units (IBU) variance in Washington State: ', round(WA_ibu.var(), 5))
+    print('Sample size is: ', WA_ibu.size)
+    print("---------------------------------")
+    print('Sample International Bitterness Units (IBU) mean in Minnisota: ', round(MN_ibu.mean(), 3))
+    print('Sample International Bitterness Units (IBU) variance in Minnisota: ', round(MN_ibu.var(), 5))
+    print('Sample size is', MN_ibu.size)
+    print("---------------------------------")
+    print('Sample International Bitterness Units (IBU) mean in DMV: ', round(DMV_ibu.mean(), 3))
+    print('Sample International Bitterness Units (IBU) variance in DMV: ', round(DMV_ibu.var(), 5))
+    print('Sample size is', DMV_ibu.size)
+    print("---------------------------------")
+    print('Sample International Bitterness Units (IBU) mean in TX: ', round(TX_ibu.mean(), 3))
+    print('Sample International Bitterness Units (IBU) variance in TX: ', round(TX_ibu.var(), 5))
+    print('Sample size is', TX_ibu.size)
+    print("---------------------------------")
+    print('Sample International Bitterness Units (IBU) mean in CO: ', round(CO_ibu.mean(), 3))
+    print('Sample International Bitterness Units (IBU) variance in CO: ', round(CO_ibu.var(), 5))
+    print('Sample size is', CO_ibu.size)
