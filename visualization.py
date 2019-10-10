@@ -66,7 +66,7 @@ def visualize_t(t_stat, n1, n2, alpha=0.05, output_image_name=None):
 
     ax.legend(loc='best', frameon=False, shadow=True, fontsize='x-large')
 
-    plt.savefig(f'img/{output_image_name}.png', transparent=False, figure=fig)
+    plt.savefig(f'images/{output_image_name}.png', transparent=False, figure=fig)
 
     # confidence interval
 #     conf = stats.t.interval(alpha=1-alpha, df=(n1+n2) -2, loc, scale = )
@@ -116,7 +116,7 @@ def f_distribution(dfn, dfd, t_anova, p_anova, alpha=0.05, image_name=None):
 
     ax.legend(loc='best', frameon=False, shadow=True, fontsize='x-large')
 
-    # plt.savefig(f'img/{image_name}.png', transparent=False, figure=fig)
+#     plt.savefig(f'images/{image_name}.png', transparent=False, figure=fig)
 
     # return fig
     
