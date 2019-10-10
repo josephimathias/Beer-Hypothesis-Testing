@@ -1,6 +1,5 @@
 ## Mod 3 Project
-# Flatiron School
-# Sisay Filate and Joey Mathias
+Sisay Filate and Joey Mathias
 
 # Goals:
 * Conduct statistical tests on data obtained through an API
